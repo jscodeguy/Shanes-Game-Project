@@ -3,7 +3,8 @@ A repo for shanes first game project
 --a day in the life of an average mug enjoyer--
 
 # H1 A DAY IN THE LIFE OF THE AVERAGE MUG ENJOYER
-
+# H2 Game Description
+a day in the life of an average mug enjoyer is just a simulation of the day to day life of a mug enthusiast
 # horizontal rule
 1. display start screen and be able to start the game using a key press
 2. player will be able to move and punch
