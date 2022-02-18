@@ -4,19 +4,21 @@ A repo for shanes first game project
 
 # A DAY IN THE LIFE OF THE AVERAGE MUG ENJOYER
 ## Game Description
-a day in the life of an average mug enjoyer is just a simulation of the day to day life of a mug enthusiast
+a day in the life of an average mug enjoyer is just a simulation of the day to day life of a mug enthusiast. You must rescue your mug from the clutches of dr.pepper and sprite before they let your mug go flat. 
 ---
-1. display start screen and be able to start the game using a key press
-2. player will be able to move and punch
-3. colliding with enemys will remove health 
-4. when health is 0 it will display gamer over
-5. when you get the mug it will take you to the next level
-6. there will be at least 3 levels
-7. there will be a timer that will end the game if it reaches 0
-8. you'll need to collect the glove to be able to punch
-9. some levels you will need to punch the beverages before being able to get mug
+1. I want to be able to start the game with a key press
+2. I want to be able to use the wasd keys to move the player
+3. I want to be able to display a health bar which reflects damage taken 
+4. I want to be able to display a game over screen when health is 0
+5. I want to be able to advance to the next level upon collection of the mug
+6. I want to be able to display a game over screen when the timer to retrieve mug runs to 0
+7. I want to be able to pick up a glove and be able to delete dr pepper by punching him
 ---
 
+![img](img/gameProj12.jpeg)
+-visual of the player display-
+this will be what the game board will look like
+---
 ![img](img/gameProj8.jpeg)
 -as a mug enjoyer you need to drink mug to survive-
 the goal of the game is to collect the mug
@@ -70,3 +72,7 @@ potential screen for game over
 ![img](img/gameProj5.jpeg)
 -potential start screen-
 potential start screen will include the directions and a brief description
+---
+![img](img/gameProj12.jpeg)
+-visual of the player display-
+this will be what the game board will look like
