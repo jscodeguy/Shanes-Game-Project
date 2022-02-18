@@ -69,10 +69,6 @@ potential screen for game over
 potential screen for game over
 
 ---
-![img](img/gameProj5.jpeg)
--potential start screen-
-potential start screen will include the directions and a brief description
----
 ![img](img/gameProj12.jpeg)
 -visual of the player display-
 this will be what the game board will look like
