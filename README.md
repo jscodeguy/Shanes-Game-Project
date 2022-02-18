@@ -67,8 +67,3 @@ potential screen for game over
 ![img](img/gameProj11.jpeg)
 -potential mug flat screen-
 potential screen for game over
-
----
-![img](img/gameProj12.jpeg)
--visual of the player display-
-this will be what the game board will look like
