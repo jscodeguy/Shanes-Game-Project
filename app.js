@@ -6,6 +6,7 @@ const glovePic = document.getElementById('glove')
 const ctx = game.getContext('2d')
 let isGloved = false
 let playerHealth = 100
+let spriteDirection = 'left'
 class MugMen {
     constructor(x, y, color, height, width) {
         this.x = x,
@@ -42,6 +43,8 @@ let player = new MugMen(10, 10, 'blue', 16, 16)
 let mug = new MugMen(600, 300, 'brown', 32, 64)
 let glove = new MugMen(50, 50, 'transparent', 20,20 )
 let sprite = new MugMen(200, 200, 'limegreen', 32, 64)
+let borderLeft = new MugMen(4, 0, 'red', 4, 900)
+let borderRight = new MugMen(792, 0, 'red', 4, 900)
 document.addEventListener('DOMContentLoaded', function () {
     
     document.addEventListener('keydown', movementHandler)
@@ -58,6 +61,9 @@ const gameLoop = () => {
     }
     if (sprite.alive){
         detectSpriteHit()
+        spritePath()
+        borderLeftHit()
+        borderRightHit()
     }
     if (mug.alive) {
         detectMugHit()
@@ -79,23 +85,37 @@ const gameLoop = () => {
         player.alive = false
         document.getElementById('status').textContent = 'you die by a sprite!'
     }
+    if (borderLeft.alive){
+        borderLeft.render()
+    }
+    if (borderRight.alive){
+        borderRight.render()
+    }
 }
 const movementHandler = (e) => {
     switch (e.keyCode) {
         case (87):
-            player.y -= 8
+            player.y -= 15
             break
         case (65):
-            player.x -= 8
+            player.x -= 15
             //sprite.x -= 10
             break
         case (83):
-            player.y += 8
+            player.y += 15
             break
         case (68):
-            player.x += 8
+            player.x += 15
             //sprite.x += 10
             break
+    }
+}
+const spritePath = () => {
+    if (spriteDirection === 'right'){
+        sprite.x += 4
+    }
+    else if (spriteDirection === 'left') {
+        sprite.x -= 4
     }
 }
 const detectMugHit = () => {
@@ -131,12 +151,24 @@ const detectSpriteHit = () => {
         && player.y < sprite.y + sprite.height
         && player.y + player.height > sprite.y
         && isGloved === false) {
-            player.y -= 15
-            player.x -= 15
+            player.y -= 25
+           // player.x -= 15
             playerHealth -= 10
             document.getElementById('health').textContent = playerHealth
             //player.alive = false
             document.getElementById('status').textContent = 'You got punch by a sprite!'
+        }
+}
+const borderLeftHit = () => {
+    if (sprite.x === borderLeft.x 
+        && spriteDirection === 'left'){
+            spriteDirection = 'right'
+        }
+}
+const borderRightHit = () => {
+    if (sprite.x + sprite.width === borderRight.x 
+        && spriteDirection === 'right'){
+            spriteDirection = 'left'
         }
 }
 //console.log(isGloved)
