@@ -1,12 +1,11 @@
-// here, we're saving the canvas and the positioning message
-// so we can refer to them later
 const game = document.getElementById('canvas')
-const movement = document.getElementById('movement')
-const glovePic = document.getElementById('glove')
-let isGloved = false
-const ctx = game.getContext('2d')
 game.setAttribute('width', getComputedStyle(game)['width'])
 game.setAttribute('height', getComputedStyle(game)['height'])
+const movement = document.getElementById('movement')
+const glovePic = document.getElementById('glove')
+const ctx = game.getContext('2d')
+let isGloved = false
+let playerHealth = 100
 class MugMen {
     constructor(x, y, color, height, width) {
         this.x = x,
@@ -76,6 +75,10 @@ const gameLoop = () => {
         drawGlove()
         glove.render()
     }
+    if (playerHealth === 0) {
+        player.alive = false
+        document.getElementById('status').textContent = 'you die by a sprite!'
+    }
 }
 const movementHandler = (e) => {
     switch (e.keyCode) {
@@ -84,12 +87,14 @@ const movementHandler = (e) => {
             break
         case (65):
             player.x -= 8
+            //sprite.x -= 10
             break
         case (83):
             player.y += 8
             break
         case (68):
             player.x += 8
+            //sprite.x += 10
             break
     }
 }
@@ -126,7 +131,11 @@ const detectSpriteHit = () => {
         && player.y < sprite.y + sprite.height
         && player.y + player.height > sprite.y
         && isGloved === false) {
-            player.alive = false
+            player.y -= 15
+            player.x -= 15
+            playerHealth -= 10
+            document.getElementById('health').textContent = playerHealth
+            //player.alive = false
             document.getElementById('status').textContent = 'You got punch by a sprite!'
         }
 }
