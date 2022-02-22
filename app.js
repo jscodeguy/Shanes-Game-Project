@@ -3,11 +3,11 @@
 const game = document.getElementById('canvas')
 const movement = document.getElementById('movement')
 const glovePic = document.getElementById('glove')
-const isGloved = false
+let isGloved = false
 const ctx = game.getContext('2d')
 game.setAttribute('width', getComputedStyle(game)['width'])
 game.setAttribute('height', getComputedStyle(game)['height'])
-class Crawler {
+class MugMen {
     constructor(x, y, color, height, width) {
         this.x = x,
         this.y = y,
@@ -23,7 +23,7 @@ class Crawler {
 }
 
 // You could also use this function syntax, to create objects
-// function Crawler(x, y, color, height, width) {
+// function MugMen(x, y, color, height, width) {
 // 	this.x = x
 // 	this.y = y
 // 	this.color = color
@@ -39,9 +39,10 @@ class Crawler {
  ctx.drawImage(
     glovePic, 50, 50
 )}
-let player = new Crawler(10, 10, 'blue', 16, 16)
-let mug = new Crawler(600, 350, 'brown', 32, 48)
-let glove = new Crawler(50, 50, 'transparent', 20,20 )
+let player = new MugMen(10, 10, 'blue', 16, 16)
+let mug = new MugMen(600, 300, 'brown', 32, 64)
+let glove = new MugMen(50, 50, 'transparent', 20,20 )
+let sprite = new MugMen(200, 200, 'limegreen', 32, 64)
 document.addEventListener('DOMContentLoaded', function () {
     
     document.addEventListener('keydown', movementHandler)
@@ -50,15 +51,24 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 const gameLoop = () => {
+    ctx.clearRect(0, 0, game.width, game.height)
+    movement.textContent = player.x + ', ' + player.y
+    // player.render()
+    if (player.alive) {
+        player.render()
+    }
+    if (sprite.alive){
+        detectSpriteHit()
+    }
     if (mug.alive) {
         detectMugHit()
     }
     if (glove.alive){
         detectGloveHit()
     }
-    ctx.clearRect(0, 0, game.width, game.height)
-    movement.textContent = player.x + ', ' + player.y
-    player.render()
+    if (sprite.alive){
+        sprite.render()
+    }
     if (mug.alive) {
         mug.render()
     }
@@ -70,16 +80,16 @@ const gameLoop = () => {
 const movementHandler = (e) => {
     switch (e.keyCode) {
         case (87):
-            player.y -= 10
+            player.y -= 8
             break
         case (65):
-            player.x -= 10
+            player.x -= 8
             break
         case (83):
-            player.y += 10
+            player.y += 8
             break
         case (68):
-            player.x += 10
+            player.x += 8
             break
     }
 }
@@ -98,7 +108,26 @@ const detectGloveHit = () => {
         && player.y < glove.y + glove.height
         && player.y + player.height > glove.y) {
             glove.alive = false
-            isGloved = true
             document.getElementById('status').textContent = 'You have a glove!'
+            isGloved = true
         }
 }
+const detectSpriteHit = () => {
+    if (player.x < sprite.x + sprite.width
+        && player.x + player.width > sprite.x
+        && player.y < sprite.y + sprite.height
+        && player.y + player.height > sprite.y
+        && isGloved === true) {
+            sprite.alive = false
+            document.getElementById('status').textContent = 'You punch a sprite!'
+        }
+    else if(player.x < sprite.x + sprite.width
+        && player.x + player.width > sprite.x
+        && player.y < sprite.y + sprite.height
+        && player.y + player.height > sprite.y
+        && isGloved === false) {
+            player.alive = false
+            document.getElementById('status').textContent = 'You got punch by a sprite!'
+        }
+}
+//console.log(isGloved)
