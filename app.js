@@ -8,6 +8,7 @@ const ctx = game.getContext("2d");
 let isGloved = false;
 let playerHealth = 100;
 let spriteDirection = "left";
+let drPepperDirection = 'up'
 class MugMen {
   constructor(x, y, color, height, width) {
     (this.x = x),
@@ -49,6 +50,7 @@ let player = new MugMen(15, 15, "blue", 15, 15);
 let mug = new MugMen(600, 300, "brown", 30, 65);
 let glove = new MugMen(50, 50, "transparent", 20, 20);
 let sprite = new MugMen(200, 200, "limegreen", 30, 65);
+let drPepper = new MugMen(300, 300, 'red', 30, 65)
 let borderLeft = new MugMen(0, 0, "red", 5, 900);
 let borderRight = new MugMen(795, 0, "red", 5, 900);
 let borderUp = new MugMen(0, 0, "red", 900, 5);
@@ -68,19 +70,25 @@ const gameLoop = () => {
     player.render();
   }
   if (sprite.alive) {
+    sprite.render()
     detectSpriteHit();
     spritePath();
     borderLeftHit();
     borderRightHit();
+    borderUpHit()
+    borderDownHit()
+  }
+  if (drPepper.alive) {
+    drPepper.render()
+    detectDrPepperHit()
+    drPepperPath()
+  
   }
   if (mug.alive) {
     detectMugHit();
   }
   if (glove.alive) {
     detectGloveHit();
-  }
-  if (sprite.alive) {
-    sprite.render();
   }
   if (mug.alive) {
     mug.render();
@@ -162,6 +170,40 @@ const detectSpriteHit = () => {
     document.getElementById("status").textContent = "you die by a sprite!";
   }
 };
+const drPepperPath = () => {
+  if (drPepperDirection === "down") {
+    drPepper.y += 5;
+  } else if (drPepperDirection === "up") {
+    drPepper.y -= 5;
+  }
+};
+const detectDrPepperHit = () => {
+  if (
+    player.x < drPepper.x + drPepper.widthheight &&
+    player.x + player.height > drPepper.x &&
+    player.y < drPepper.y + drPepper.height &&
+    player.y + player.height > drPepper.y &&
+    isGloved === true
+  ) {
+    drawPunch()
+    drPepper.alive = false;
+    document.getElementById("status").textContent = "You punch a dr Pepper!";
+  } else if (
+    player.x < drPepper.x + drPepper.height &&
+    player.x + player.height > drPepper.x &&
+    player.y < drPepper.y + drPepper.height &&
+    player.y + player.height > drPepper.y &&
+    isGloved === false
+  ) {
+    player.y -= 25;
+    playerHealth -= 10;
+    document.getElementById("status").textContent =
+      "You got punch by a drPepper!";
+  } else if (playerHealth === 0) {
+    document.getElementById("status").textContent = "you die by a dr Pepper!";
+  }
+};
+
 //this is the functions that deal with mug and the glove
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const detectGloveHit = () => {
@@ -209,6 +251,34 @@ const borderRightHit = () => {
   }
   if (player.x + player.width === borderRight.x) {
     player.x -= 30;
+    document.getElementById("status").textContent =
+      "The world punch you for trying to abandon mug";
+    playerHealth -= 10;
+  }
+};
+const borderUpHit = () => {
+  if (
+   drPepper.y  === borderUp.y &&
+    drPepperDirection === "up"
+  ) {
+   drPepperDirection = "down";
+  }
+  if (player.y === borderUp.y) {
+    player.y += 30;
+    document.getElementById("status").textContent =
+      "The world punch you for trying to abandon mug";
+    playerHealth -= 10;
+  }
+};
+const borderDownHit = () => {
+  if (
+   drPepper.y + drPepper.height === borderDown.y &&
+  drPepperDirection === "down"
+  ) {
+  drPepperDirection = "up";
+  }
+  if (player.y + player.height === borderDown.y) {
+    player.y -= 30;
     document.getElementById("status").textContent =
       "The world punch you for trying to abandon mug";
     playerHealth -= 10;
