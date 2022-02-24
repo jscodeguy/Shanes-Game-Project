@@ -3,19 +3,19 @@ game.setAttribute("width", getComputedStyle(game)["width"]);
 game.setAttribute("height", getComputedStyle(game)["height"]);
 const movement = document.getElementById("movement");
 const glovePic = document.getElementById("glove");
-const glovePunch = document.getElementById('gloveExtend')
+const glovePunch = document.getElementById("gloveExtend");
 const ctx = game.getContext("2d");
 let isGloved = false;
 let playerHealth = 100;
 let spriteDirection = "left";
-let drPepperDirection = 'up'
+let drPepperDirection = "up";
 class MugMen {
-  constructor(x, y, color, height, width) {
+  constructor(x, y, color, width, height) {
     (this.x = x),
       (this.y = y),
       (this.color = color),
-      (this.height = height),
       (this.width = width),
+      (this.height = height),
       (this.alive = true),
       (this.render = function () {
         ctx.fillStyle = this.color;
@@ -44,13 +44,13 @@ const drawGlove = () => {
   ctx.drawImage(glovePic, 50, 50);
 };
 const drawPunch = () => {
-  ctx.drawImage(glovePunch, player.x, player.y)
-}
+  ctx.drawImage(glovePunch, player.x + player.width, player.y);
+};
 let player = new MugMen(15, 15, "blue", 15, 15);
-let mug = new MugMen(600, 300, "brown", 30, 65);
+let mug = new MugMen(600, 300, "brown", 65, 30);
 let glove = new MugMen(50, 50, "transparent", 20, 20);
-let sprite = new MugMen(200, 200, "limegreen", 30, 65);
-let drPepper = new MugMen(300, 300, 'red', 30, 65)
+let sprite = new MugMen(200, 200, "limegreen", 65, 30);
+let drPepper = new MugMen(100, 100, "red", 65, 30);
 let borderLeft = new MugMen(0, 0, "red", 5, 900);
 let borderRight = new MugMen(795, 0, "red", 5, 900);
 let borderUp = new MugMen(0, 0, "red", 900, 5);
@@ -70,19 +70,18 @@ const gameLoop = () => {
     player.render();
   }
   if (sprite.alive) {
-    sprite.render()
+    sprite.render();
     detectSpriteHit();
     spritePath();
     borderLeftHit();
     borderRightHit();
-    borderUpHit()
-    borderDownHit()
+    borderUpHit();
+    borderDownHit();
   }
   if (drPepper.alive) {
-    drPepper.render()
-    detectDrPepperHit()
-    drPepperPath()
-  
+    drPepper.render();
+    detectDrPepperHit();
+    drPepperPath();
   }
   if (mug.alive) {
     detectMugHit();
@@ -146,21 +145,21 @@ const spritePath = () => {
 };
 const detectSpriteHit = () => {
   if (
-    player.x < sprite.x + sprite.width &&
-    player.x + player.width > sprite.x &&
-    player.y < sprite.y + sprite.height &&
-    player.y + player.height > sprite.y &&
-    isGloved === true
+    player.x < sprite.y + sprite.height &&
+    player.x + player.width > sprite.y &&
+    player.y < sprite.x + sprite.width &&
+    player.y + player.height > sprite.x &&
+    isGloved 
   ) {
-    drawPunch()
+    drawPunch();
     sprite.alive = false;
     document.getElementById("status").textContent = "You punch a sprite!";
   } else if (
-    player.x < sprite.x + sprite.width &&
-    player.x + player.width > sprite.x &&
-    player.y < sprite.y + sprite.height &&
-    player.y + player.height > sprite.y &&
-    isGloved === false
+    player.x < sprite.y + sprite.height &&
+    player.x + player.width > sprite.y &&
+    player.y < sprite.x + sprite.width &&
+    player.y + player.height > sprite.x &&
+    !isGloved
   ) {
     player.y -= 25;
     playerHealth -= 10;
@@ -171,35 +170,49 @@ const detectSpriteHit = () => {
   }
 };
 const drPepperPath = () => {
-  if (drPepperDirection === "down") {
-    drPepper.y += 5;
-  } else if (drPepperDirection === "up") {
-    drPepper.y -= 5;
-  }
+  // if (drPepperDirection === "down") {
+  //   drPepper.y += 5;
+  // } else if (drPepperDirection === "up") {
+  //   drPepper.y -= 5;
+  // }
 };
 const detectDrPepperHit = () => {
   if (
-    player.x < drPepper.x + drPepper.widthheight &&
-    player.x + player.height > drPepper.x &&
-    player.y < drPepper.y + drPepper.height &&
-    player.y + player.height > drPepper.y &&
-    isGloved === true
+    player.x < drPepper.y + drPepper.height &&
+    player.x + player.width > drPepper.y &&
+    player.y < drPepper.x + drPepper.width &&
+    player.y + player.height > drPepper.x &&
+    isGloved
   ) {
-    drawPunch()
+    drawPunch();
     drPepper.alive = false;
     document.getElementById("status").textContent = "You punch a dr Pepper!";
   } else if (
-    player.x < drPepper.x + drPepper.height &&
-    player.x + player.height > drPepper.x &&
-    player.y < drPepper.y + drPepper.height &&
-    player.y + player.height > drPepper.y &&
-    isGloved === false
+    player.x < drPepper.y + drPepper.height &&
+    player.x + player.width > drPepper.y &&
+    player.y < drPepper.x + drPepper.width &&
+    player.y + player.height > drPepper.x &&
+    !isGloved && drPepperDirection === 'down'
   ) {
-    player.y -= 25;
+    player.x -= 50;
+    player.y += 50
     playerHealth -= 10;
     document.getElementById("status").textContent =
       "You got punch by a drPepper!";
-  } else if (playerHealth === 0) {
+  } else if (
+    player.x < drPepper.y + drPepper.height &&
+    player.x + player.width > drPepper.y &&
+    player.y < drPepper.x + drPepper.width &&
+    player.y + player.height > drPepper.x &&
+    !isGloved && drPepperDirection === 'up'
+  ) {
+    player.x -= 50;
+    player.y -= 50
+    playerHealth -= 10;
+    document.getElementById("status").textContent =
+      "You got punch by a drPepper!";
+  }
+  else if (playerHealth === 0) {
     document.getElementById("status").textContent = "you die by a dr Pepper!";
   }
 };
@@ -257,11 +270,8 @@ const borderRightHit = () => {
   }
 };
 const borderUpHit = () => {
-  if (
-   drPepper.y  === borderUp.y &&
-    drPepperDirection === "up"
-  ) {
-   drPepperDirection = "down";
+  if (drPepper.y === borderUp.y && drPepperDirection === "up") {
+    drPepperDirection = "down";
   }
   if (player.y === borderUp.y) {
     player.y += 30;
@@ -272,10 +282,10 @@ const borderUpHit = () => {
 };
 const borderDownHit = () => {
   if (
-   drPepper.y + drPepper.height === borderDown.y &&
-  drPepperDirection === "down"
+    drPepper.y + drPepper.height === borderDown.y &&
+    drPepperDirection === "down"
   ) {
-  drPepperDirection = "up";
+    drPepperDirection = "up";
   }
   if (player.y + player.height === borderDown.y) {
     player.y -= 30;

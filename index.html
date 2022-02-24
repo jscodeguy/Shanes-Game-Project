@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Average Mug Enjoyer</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="textDiv">
+      <h2>Welcome to a day in the life of the average mug enjoyer!</h2>
+      <h3>
+        You need to rescue your mug so you can consume it before it goes flat!
+      </h3>
+      <h4>
+        Use wasd to move your character and if the enemy sprite or dr.Pepper are giving
+        you trouble, just pick up the glove and knock them out!
+      </h4>
+    </div>
+    <img src="img/glove puncher.png.png" alt="glove" id="glove" />
+    <img
+      src="img/glove puncher extend.png.png"
+      alt="glove extend"
+      id="gloveExtend"
+    />
+    <div id="container">
+      <aside id="top-left"><h2>Rescue the Mug</h2></aside>
+      <aside id="top-right"><h2 id="movement"></h2></aside>
+      <main>
+        <canvas id="canvas"><!-- play it, a game --></canvas>
+      </main>
+      <aside id="btm-left"><h2 id="health">100</h2></aside>
+      <aside id="btm-right"><h2 id="status">He's going Flat!</h2></aside>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
