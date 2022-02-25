@@ -10,35 +10,20 @@ let playerHealth = 100;
 let spriteDirection = "left";
 let drPepperDirection = "up";
 class MugMen {
-  constructor(x, y, color, width, height) {
+  constructor(x, y, color, width, height, type) {
     (this.x = x),
       (this.y = y),
       (this.color = color),
       (this.width = width),
       (this.height = height),
+      (this.type = type),
       (this.alive = true),
       (this.render = function () {
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.height, this.width);
+        ctx.fillRect(this.x, this.y, this.width, this.height);
       });
   }
 }
-//these are the constructors where all the object parameters are set
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-// You could also use this function syntax, to create objects
-// function MugMen(x, y, color, height, width) {
-// 	this.x = x
-// 	this.y = y
-// 	this.color = color
-// 	this.height = height
-// 	this.width = width
-// 	this.alive = true
-// 	this.render = function () {
-// 		ctx.fillStyle = this.color
-// 		ctx.fillRect(this.x, this.y, this.height, this.width)
-// 	}
-// }
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const drawGlove = () => {
   ctx.drawImage(glovePic, 50, 50);
@@ -46,15 +31,15 @@ const drawGlove = () => {
 const drawPunch = () => {
   ctx.drawImage(glovePunch, player.x + player.width, player.y);
 };
-let player = new MugMen(15, 15, "blue", 15, 15);
-let mug = new MugMen(600, 300, "brown", 65, 30);
-let glove = new MugMen(50, 50, "transparent", 20, 20);
-let sprite = new MugMen(200, 200, "limegreen", 65, 30);
-let drPepper = new MugMen(100, 100, "red", 65, 30);
-let borderLeft = new MugMen(0, 0, "red", 5, 900);
-let borderRight = new MugMen(795, 0, "red", 5, 900);
-let borderUp = new MugMen(0, 0, "red", 900, 5);
-let borderDown = new MugMen(0, 395, "red", 900, 5);
+let player = new MugMen(15, 15, "blue", 15, 15, "player");
+let mug = new MugMen(600, 300, "brown", 30, 65, "mug");
+let glove = new MugMen(50, 50, "transparent", 20, 20, "glove");
+let sprite = new MugMen(100, 200, "limegreen", 30, 65, "sprite");
+let drPepper = new MugMen(100, 100, "red", 30, 65, "drPepper");
+let borderLeft = new MugMen(0, 0, "red", 5, 900, "border");
+let borderRight = new MugMen(795, 0, "red", 5, 900, "border");
+let borderUp = new MugMen(0, 0, "red", 900, 5, "border");
+let borderDown = new MugMen(0, 395, "red", 900, 5, "border");
 document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener("keydown", movementHandler);
   setInterval(gameLoop, 60);
@@ -68,20 +53,20 @@ const gameLoop = () => {
   document.getElementById("health").textContent = playerHealth;
   if (player.alive) {
     player.render();
+    borderDownHit();
+    borderLeftHit();
+    borderUpHit();
+    borderRightHit();
   }
   if (sprite.alive) {
     sprite.render();
-    detectSpriteHit();
     spritePath();
-    borderLeftHit();
-    borderRightHit();
-    borderUpHit();
-    borderDownHit();
+    detectHit(sprite);
   }
   if (drPepper.alive) {
     drPepper.render();
-    detectDrPepperHit();
     drPepperPath();
+    detectHit(drPepper);
   }
   if (mug.alive) {
     detectMugHit();
@@ -143,77 +128,96 @@ const spritePath = () => {
     sprite.x -= 5;
   }
 };
-const detectSpriteHit = () => {
+const drPepperPath = () => {
+  if (drPepperDirection === "down") {
+    drPepper.y += 5;
+  } else if (drPepperDirection === "up") {
+    drPepper.y -= 5;
+  }
+};
+const detectHit = (thing) => {
   if (
-    player.x < sprite.y + sprite.height &&
-    player.x + player.width > sprite.y &&
-    player.y < sprite.x + sprite.width &&
-    player.y + player.height > sprite.x &&
-    isGloved 
+    player.x < thing.x + thing.width &&
+    player.x + player.width > thing.x &&
+    player.y < thing.y + thing.height &&
+    player.y + player.height > thing.y &&
+    isGloved &&
+    thing.type === "sprite"
   ) {
     drawPunch();
-    sprite.alive = false;
+    thing.alive = false;
     document.getElementById("status").textContent = "You punch a sprite!";
   } else if (
-    player.x < sprite.y + sprite.height &&
-    player.x + player.width > sprite.y &&
-    player.y < sprite.x + sprite.width &&
-    player.y + player.height > sprite.x &&
-    !isGloved
+    player.x < thing.x + thing.width &&
+    player.x + player.width > thing.x &&
+    player.y < thing.y + thing.height &&
+    player.y + player.height > thing.y &&
+    isGloved &&
+    thing.type === "drPepper"
   ) {
-    player.y -= 25;
+    drawPunch();
+    thing.alive = false;
+    document.getElementById("status").textContent = "You punch a dr.Pepper!";
+  } else if (
+    player.x < thing.x + thing.width &&
+    player.x + player.width > thing.x &&
+    player.y < thing.y + thing.height &&
+    player.y + player.height > thing.y &&
+    !isGloved &&
+    thing.type === "sprite" &&
+    spriteDirection === "left"
+  ) {
+    player.x -= 50;
+    player.y -= 50;
     playerHealth -= 10;
     document.getElementById("status").textContent =
       "You got punch by a sprite!";
-  } else if (playerHealth === 0) {
-    document.getElementById("status").textContent = "you die by a sprite!";
-  }
-};
-const drPepperPath = () => {
-  // if (drPepperDirection === "down") {
-  //   drPepper.y += 5;
-  // } else if (drPepperDirection === "up") {
-  //   drPepper.y -= 5;
-  // }
-};
-const detectDrPepperHit = () => {
-  if (
-    player.x < drPepper.y + drPepper.height &&
-    player.x + player.width > drPepper.y &&
-    player.y < drPepper.x + drPepper.width &&
-    player.y + player.height > drPepper.x &&
-    isGloved
-  ) {
-    drawPunch();
-    drPepper.alive = false;
-    document.getElementById("status").textContent = "You punch a dr Pepper!";
   } else if (
-    player.x < drPepper.y + drPepper.height &&
-    player.x + player.width > drPepper.y &&
-    player.y < drPepper.x + drPepper.width &&
-    player.y + player.height > drPepper.x &&
-    !isGloved && drPepperDirection === 'down'
+    player.x < thing.x + thing.width &&
+    player.x + player.width > thing.x &&
+    player.y < thing.y + thing.height &&
+    player.y + player.height > thing.y &&
+    !isGloved &&
+    thing.type === "sprite" &&
+    spriteDirection === "right"
   ) {
-    player.x -= 50;
-    player.y += 50
+    player.x += 50;
+    player.y -= 50;
     playerHealth -= 10;
     document.getElementById("status").textContent =
-      "You got punch by a drPepper!";
+      "You got punch by a sprite!";
   } else if (
-    player.x < drPepper.y + drPepper.height &&
-    player.x + player.width > drPepper.y &&
-    player.y < drPepper.x + drPepper.width &&
-    player.y + player.height > drPepper.x &&
-    !isGloved && drPepperDirection === 'up'
+    player.x < thing.x + thing.width &&
+    player.x + player.width > thing.x &&
+    player.y < thing.y + thing.height &&
+    player.y + player.height > thing.y &&
+    !isGloved &&
+    thing.type === "drPepper" &&
+    drPepperDirection === "up"
   ) {
     player.x -= 50;
-    player.y -= 50
+    player.y -= 50;
     playerHealth -= 10;
     document.getElementById("status").textContent =
-      "You got punch by a drPepper!";
+      "You got punch by a dr.Pepper!";
+  } else if (
+    player.x < thing.x + thing.width &&
+    player.x + player.width > thing.x &&
+    player.y < thing.y + thing.height &&
+    player.y + player.height > thing.y &&
+    !isGloved &&
+    thing.type === "drPepper" &&
+    drPepperDirection === "down"
+  ) {
+    player.x -= 50;
+    player.y += 50;
+    playerHealth -= 10;
+    document.getElementById("status").textContent =
+      "You got punch by a dr.Pepper!";
   }
-  else if (playerHealth === 0) {
-    document.getElementById("status").textContent = "you die by a dr Pepper!";
+  if (playerHealth === 0) {
+    player.alive = false;
+    document.getElementById("status").textContent = "You die by a soda punch";
   }
 };
 
@@ -245,10 +249,10 @@ const detectMugHit = () => {
 //these are my border collision functions
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const borderLeftHit = () => {
-  if (sprite.x === borderLeft.x && spriteDirection === "left") {
+  if (sprite.x <= 0 && spriteDirection === "left") {
     spriteDirection = "right";
   }
-  if (player.x === borderLeft.x) {
+  if (player.x <= 0) {
     player.x += 30;
     document.getElementById("status").textContent =
       "The world punch you for trying to abandon mug";
@@ -256,13 +260,10 @@ const borderLeftHit = () => {
   }
 };
 const borderRightHit = () => {
-  if (
-    sprite.x + sprite.width === borderRight.x &&
-    spriteDirection === "right"
-  ) {
+  if (sprite.x + sprite.width >= 830 && spriteDirection === "right") {
     spriteDirection = "left";
   }
-  if (player.x + player.width === borderRight.x) {
+  if (player.x + player.width >= 800) {
     player.x -= 30;
     document.getElementById("status").textContent =
       "The world punch you for trying to abandon mug";
@@ -270,10 +271,10 @@ const borderRightHit = () => {
   }
 };
 const borderUpHit = () => {
-  if (drPepper.y === borderUp.y && drPepperDirection === "up") {
+  if (drPepper.y <= 0 && drPepperDirection === "up") {
     drPepperDirection = "down";
   }
-  if (player.y === borderUp.y) {
+  if (player.y <= 0) {
     player.y += 30;
     document.getElementById("status").textContent =
       "The world punch you for trying to abandon mug";
@@ -281,13 +282,10 @@ const borderUpHit = () => {
   }
 };
 const borderDownHit = () => {
-  if (
-    drPepper.y + drPepper.height === borderDown.y &&
-    drPepperDirection === "down"
-  ) {
+  if (drPepper.y + drPepper.height >= 360 && drPepperDirection === "down") {
     drPepperDirection = "up";
   }
-  if (player.y + player.height === borderDown.y) {
+  if (player.y + player.height >= 395) {
     player.y -= 30;
     document.getElementById("status").textContent =
       "The world punch you for trying to abandon mug";
